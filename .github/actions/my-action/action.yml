@@ -7,4 +7,5 @@ runs:
   steps:
     - name: Hola Becloud
       run: echo "Hola BeCloud by Bedoya"
+      shell: bash
 
