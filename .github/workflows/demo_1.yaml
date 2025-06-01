@@ -8,6 +8,15 @@ jobs:
             steps:
             - name: by bedoya
               run: echo "BeCloud and level up your cloud skills by BedoyaCloud"
+            
+            - name: touch file
+              run: touch hola.txt
+
+            - name: Set text
+              run: echo "Hola BeCloud" > hola.txt
+
+            - name: cat file
+              run: cat hola.txt
 
     becloud2:
             runs-on: ubuntu-latest
