@@ -1,0 +1,10 @@
+name: Hola BeCloud
+on: [push]
+
+jobs:
+    becloud:
+            runs-on: ubuntu-latest
+
+            steps:
+            - name: by bedoya
+              run: echo "BeCloud and level up your cloud skills by BedoyaCloud"
