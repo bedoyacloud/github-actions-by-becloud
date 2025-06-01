@@ -8,3 +8,10 @@ jobs:
             steps:
             - name: by bedoya
               run: echo "BeCloud and level up your cloud skills by BedoyaCloud"
+
+    becloud2:
+            runs-on: ubuntu-latest
+
+            steps:
+            - name: LS By Bedoya
+              run: ls -la
