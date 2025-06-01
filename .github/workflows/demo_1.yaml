@@ -20,7 +20,7 @@ jobs:
 
     becloud2:
             runs-on: ubuntu-latest
-
+            needs: becloud
             steps:
             - name: LS By Bedoya
               run: ls -la
