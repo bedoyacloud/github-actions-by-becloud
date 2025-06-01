@@ -1,0 +1,10 @@
+name: "my action"
+description: "This is my action"
+
+runs:
+  using: "composite"
+
+  steps:
+    - name: Hola Becloud
+      run: echo "Hola BeCloud by Bedoya"
+
