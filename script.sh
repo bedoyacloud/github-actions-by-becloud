@@ -1,2 +1,2 @@
-apt-get update
-apt-get install curl jq -y
+sudo apt-get update
+sudo apt-get install curl jq -y
