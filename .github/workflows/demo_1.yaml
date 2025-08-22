@@ -1,5 +1,7 @@
 name: Hola BeCloud
-on: [push]
+on:
+  push:
+  workflow_dispatch:
 
 jobs:
   nombre_del_job:
