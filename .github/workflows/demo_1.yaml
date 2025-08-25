@@ -10,28 +10,30 @@ jobs:
         steps:
             - name: Step-one
               uses: actions/checkout@v4
-            - name: Step-two
-              run: env | sort
+              with:
+                repository: apache/tomcat
+                ref: master
+                path: ./tomcat
 
-    job2:
-        name: Second job
-        runs-on: windows-latest
-        steps:
-            - name: Step-one
-              uses: actions/checkout@v4
-            - name: Step-two
-              run: |
-                Get-ChildItem Env: | Sort-Object Name
-              shell: pwsh
+    # job2:
+    #     name: Second job
+    #     runs-on: windows-latest
+    #     steps:
+    #         - name: Step-one
+    #           uses: actions/checkout@v4
+    #         - name: Step-two
+    #           run: |
+    #             Get-ChildItem Env: | Sort-Object Name
+    #           shell: pwsh
 
-    job3:
-        name: third job
-        runs-on: ubuntu-latest
-        needs:
-            - job1
-            - job2
-        steps:
-            - name: Step-one
-              uses: actions/checkout@v4
-            - name: Step-two
-              run: env | sort
+    # job3:
+    #     name: third job
+    #     runs-on: ubuntu-latest
+    #     needs:
+    #         - job1
+    #         - job2
+    #     steps:
+    #         - name: Step-one
+    #           uses: actions/checkout@v4
+    #         - name: Step-two
+    #           run: env | sort
