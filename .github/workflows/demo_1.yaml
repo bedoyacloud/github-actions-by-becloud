@@ -1,39 +1,50 @@
-name: Hola BeCloud
-on:
-    push:
-    workflow_dispatch:
+name: Job Outputs Demo
+
+on: [push]
 
 jobs:
-    job1:
-        name: First job
-        runs-on: ubuntu-latest
-        steps:
-            - name: Step-one
-              uses: actions/checkout@v4
-              with:
-                repository: apache/tomcat
-                ref: master
-                path: ./tomcat
+  # JOB 1: Produce outputs
+  job1:
+    runs-on: ubuntu-latest
+    outputs:
+      # Definimos qué outputs va a producir este job
+      output1: ${{ steps.step1.outputs.result }}
+      version: ${{ steps.step1.outputs.app_version }}
+      environment: ${{ steps.step1.outputs.deploy_env }}
+    
+    steps:
+      - name: Generate outputs
+        id: step1
+        run: |
+          # Creamos outputs a nivel de step
+          echo "result=success" >> $GITHUB_OUTPUT
+          echo "app_version=1.2.3" >> $GITHUB_OUTPUT
+          echo "deploy_env=production" >> $GITHUB_OUTPUT
 
-    # job2:
-    #     name: Second job
-    #     runs-on: windows-latest
-    #     steps:
-    #         - name: Step-one
-    #           uses: actions/checkout@v4
-    #         - name: Step-two
-    #           run: |
-    #             Get-ChildItem Env: | Sort-Object Name
-    #           shell: pwsh
+  # JOB 2: Consume outputs (dependiente)
+  job2:
+    runs-on: ubuntu-latest
+    needs: job1  # ← Declaramos la dependencia
+    
+    steps:
+      - name: Use outputs from job1
+        run: |
+          # Usamos los outputs del job1
+          echo "Result: ${{ needs.job1.outputs.output1 }}"
+          echo "Version: ${{ needs.job1.outputs.version }}"
+          echo "Environment: ${{ needs.job1.outputs.environment }}"
+      
+      - name: Conditional step based on output
+        if: ${{ needs.job1.outputs.output1 == 'success' }}
+        run: echo "Previous job succeeded!"
 
-    # job3:
-    #     name: third job
-    #     runs-on: ubuntu-latest
-    #     needs:
-    #         - job1
-    #         - job2
-    #     steps:
-    #         - name: Step-one
-    #           uses: actions/checkout@v4
-    #         - name: Step-two
-    #           run: env | sort
+  # JOB 3: También puede usar los outputs
+  job3:
+    runs-on: ubuntu-latest
+    needs: [job1, job2]  # ← Puede depender de múltiples jobs
+    
+    steps:
+      - name: Deploy using job1 outputs
+        run: |
+          echo "Deploying version ${{ needs.job1.outputs.version }}"
+          echo "To environment: ${{ needs.job1.outputs.environment }}"
