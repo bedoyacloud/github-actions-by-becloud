@@ -1,0 +1,35 @@
+name: cheat-sheet-vars
+on:
+  workflow_dispatch: {}
+  # opcional: añade PR para ver HEAD/BASE en PRs reales
+  # pull_request: {}
+
+permissions:
+  contents: read
+
+jobs:
+  show:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Paquetes rápidos (echo a logs)
+        run: |
+          echo "Repo: $GITHUB_REPOSITORY | Owner: $GITHUB_REPOSITORY_OWNER | ID: $GITHUB_REPOSITORY_ID"
+          echo "Ref:  $GITHUB_REF | Name: $GITHUB_REF_NAME | Type: $GITHUB_REF_TYPE"
+          echo "PR:   base=$GITHUB_BASE_REF head=$GITHUB_HEAD_REF"
+          echo "Run:  id=$GITHUB_RUN_ID num=$GITHUB_RUN_NUMBER try=$GITHUB_RUN_ATTEMPT"
+          echo "WF:   $GITHUB_WORKFLOW | ref=$GITHUB_WORKFLOW_REF | sha=$GITHUB_WORKFLOW_SHA"
+          echo "Paths: ENV=$GITHUB_ENV OUT=$GITHUB_OUTPUT PATH=$GITHUB_PATH STEP_SUMMARY=$GITHUB_STEP_SUMMARY"
+          echo "Actor/Job/Action: $GITHUB_ACTOR ($GITHUB_ACTOR_ID) | job=$GITHUB_JOB | action=$GITHUB_ACTIONS"
+          echo "URLs: $GITHUB_SERVER_URL | $GITHUB_API_URL | $GITHUB_GRAPHQL_URL"
+          echo "Runner: $RUNNER_OS / $RUNNER_ARCH -> workspace=$GITHUB_WORKSPACE"
+      - name: Resumen (más legible)
+        run: |
+          cat <<'MD' >> "$GITHUB_STEP_SUMMARY"
+          ## Variables rápidas
+          - **Repo**: \`$GITHUB_REPOSITORY\`
+          - **Ref**: \`$GITHUB_REF\` (\`$GITHUB_REF_NAME\`, \`$GITHUB_REF_TYPE\`)
+          - **PR**: base=\`$GITHUB_BASE_REF\` head=\`$GITHUB_HEAD_REF\`
+          - **Run**: id=\`$GITHUB_RUN_ID\` try=\`$GITHUB_RUN_ATTEMPT\`
+          - **Actor**: \`$GITHUB_ACTOR\` (\`$GITHUB_ACTOR_ID\`)
+          - **Workspace**: \`$GITHUB_WORKSPACE\`
+          MD
