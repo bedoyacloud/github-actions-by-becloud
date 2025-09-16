@@ -1,52 +1,18 @@
-name: Job Outputs Demo with Debugging
-
-on: [push]
-
+name: cheat-sheet-vars
+on: workflow_dispatch
 jobs:
-  # JOB 1: Produce outputs
-  job1:
+  show:
     runs-on: ubuntu-latest
-    outputs:
-      output1: ${{ steps.step1.outputs.result }}
-      version: ${{ steps.step1.outputs.app_version }}
-      environment: ${{ steps.step1.outputs.deploy_env }}
-    
     steps:
-      - name: Generate outputs
-        id: step1
+      - name: Paquetes rápidos
         run: |
-          # Creamos outputs a nivel de step
-          echo "result=success" >> $GITHUB_OUTPUT
-          echo "app_version=1.2.3" >> $GITHUB_OUTPUT
-          echo "deploy_env=production" >> $GITHUB_OUTPUT
-      
-      # 🔍 AQUÍ INSPECCIONAMOS EL CONTENIDO
-      - name: Debug - Show GITHUB_OUTPUT content
-        run: |
-          echo "=== Content of GITHUB_OUTPUT file ==="
-          cat $GITHUB_OUTPUT
-          echo "=== End of GITHUB_OUTPUT ==="
-          echo ""
-          echo "GITHUB_OUTPUT file location: $GITHUB_OUTPUT"
-          ls -la $GITHUB_OUTPUT
+          echo "Repo: $GITHUB_REPOSITORY | Owner: $GITHUB_REPOSITORY_OWNER | ID: $GITHUB_REPOSITORY_ID"
+          echo "Ref:  $GITHUB_REF | Name: $GITHUB_REF_NAME | Type: $GITHUB_REF_TYPE"
+          echo "PR:   base=$GITHUB_BASE_REF head=$GITHUB_HEAD_REF"
+          echo "Run:  id=$GITHUB_RUN_ID num=$GITHUB_RUN_NUMBER try=$GITHUB_RUN_ATTEMPT"
+          echo "WF:   $GITHUB_WORKFLOW | ref=$GITHUB_WORKFLOW_REF | sha=$GITHUB_WORKFLOW_SHA"
+          echo "Paths: ENV=$GITHUB_ENV OUT=$GITHUB_OUTPUT PATH=$GITHUB_PATH STEP_SUMMARY=$GITHUB_STEP_SUMMARY"
+          echo "Actor/Job/Action: $GITHUB_ACTOR ($GITHUB_ACTOR_ID) | job=$GITHUB_JOB | action=$GITHUB_ACTIONS"
+          echo "URLs: $GITHUB_SERVER_URL | $GITHUB_API_URL | $GITHUB_GRAPHQL_URL"
+          echo "Runner: $RUNNER_OS / $RUNNER_ARCH -> workspace=$GITHUB_WORKSPACE"
 
-  # JOB 2: Consume outputs (dependiente)
-  job2:
-    runs-on: ubuntu-latest
-    needs: job1
-    
-    steps:
-      # 🔍 TAMBIÉN PODEMOS VER LOS OUTPUTS RECIBIDOS
-      - name: Debug - Show received outputs
-        run: |
-          echo "=== Outputs received from job1 ==="
-          echo "output1: ${{ needs.job1.outputs.output1 }}"
-          echo "version: ${{ needs.job1.outputs.version }}"
-          echo "environment: ${{ needs.job1.outputs.environment }}"
-          echo "=== End outputs ==="
-      
-      - name: Use outputs from job1
-        run: |
-          echo "Result: ${{ needs.job1.outputs.output1 }}"
-          echo "Version: ${{ needs.job1.outputs.version }}"
-          echo "Environment: ${{ needs.job1.outputs.environment }}"
