@@ -27,6 +27,19 @@ jobs:
           echo "If hash matches your known values:"
           echo "- Organization secret = [calculate hash of your org secret]"
           echo "- Repository secret = [calculate hash of your repo secret]"
+          
+      - name: Show which secret is being used
+        run: |
+          echo "First 4 characters: ${API_KEY:0:4}"
+          if [[ "$API_KEY" == ORG-* ]]; then
+            echo "✅ Using ORGANIZATION secret"
+          elif [[ "$API_KEY" == REPO-* ]]; then
+            echo "✅ Using REPOSITORY secret" 
+          elif [[ "$API_KEY" == ENV-* ]]; then
+            echo "✅ Using ENVIRONMENT secret"
+          fi
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
 
   # Job CON environment - usa Environment Secret  
   test-with-environment:
@@ -48,6 +61,19 @@ jobs:
         run: |
           SECRET_HASH=$(echo "${{ secrets.API_KEY }}" | sha256sum | cut -c1-8)
           echo "Production environment - Secret hash: $SECRET_HASH"
+          
+      - name: Show which secret is being used (production)
+        run: |
+          echo "First 4 characters: ${API_KEY:0:4}"
+          if [[ "$API_KEY" == ORG-* ]]; then
+            echo "✅ Using ORGANIZATION secret"
+          elif [[ "$API_KEY" == REPO-* ]]; then
+            echo "✅ Using REPOSITORY secret" 
+          elif [[ "$API_KEY" == ENV-* ]]; then
+            echo "✅ Using ENVIRONMENT secret"
+          fi
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
 
   # Job CON environment diferente (sin secret) - usa Repository Secret
   test-staging-environment:
@@ -62,6 +88,19 @@ jobs:
           echo "API_KEY first 3 chars: ${API_KEY:0:3}"
           echo "Expected: repository secret (length ~25, starts 'rep')"
           echo "---"
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+          
+      - name: Show which secret is being used (staging)
+        run: |
+          echo "First 4 characters: ${API_KEY:0:4}"
+          if [[ "$API_KEY" == ORG-* ]]; then
+            echo "✅ Using ORGANIZATION secret"
+          elif [[ "$API_KEY" == REPO-* ]]; then
+            echo "✅ Using REPOSITORY secret" 
+          elif [[ "$API_KEY" == ENV-* ]]; then
+            echo "✅ Using ENVIRONMENT secret"
+          fi
         env:
           API_KEY: ${{ secrets.API_KEY }}
 
