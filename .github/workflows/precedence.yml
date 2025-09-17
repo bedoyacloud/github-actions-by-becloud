@@ -13,9 +13,20 @@ jobs:
       - name: Show API Key (No Environment)
         run: |
           echo "Job: test-without-environment"
-          echo "API_KEY value: ${{ secrets.API_KEY }}"
-          echo "Expected: repository-api-key-67890"
+          echo "API_KEY length: ${#API_KEY}"
+          echo "API_KEY first 3 chars: ${API_KEY:0:3}"
+          echo "Expected: repository secret (length ~25, starts 'rep')"
           echo "---"
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+      
+      - name: Identify which secret is being used
+        run: |
+          SECRET_HASH=$(echo "${{ secrets.API_KEY }}" | sha256sum | cut -c1-8)
+          echo "Secret hash: $SECRET_HASH"
+          echo "If hash matches your known values:"
+          echo "- Organization secret = [calculate hash of your org secret]"
+          echo "- Repository secret = [calculate hash of your repo secret]"
 
   # Job CON environment - usa Environment Secret  
   test-with-environment:
@@ -26,9 +37,17 @@ jobs:
         run: |
           echo "Job: test-with-environment"
           echo "Environment: production"
-          echo "API_KEY value: ${{ secrets.API_KEY }}"
-          echo "Expected: environment-api-key-abcde"
+          echo "API_KEY length: ${#API_KEY}"
+          echo "API_KEY first 3 chars: ${API_KEY:0:3}"
+          echo "Expected: environment secret (length ~25, starts 'env')"
           echo "---"
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+          
+      - name: Identify which secret (production environment)
+        run: |
+          SECRET_HASH=$(echo "${{ secrets.API_KEY }}" | sha256sum | cut -c1-8)
+          echo "Production environment - Secret hash: $SECRET_HASH"
 
   # Job CON environment diferente (sin secret) - usa Repository Secret
   test-staging-environment:
@@ -39,9 +58,12 @@ jobs:
         run: |
           echo "Job: test-staging-environment"
           echo "Environment: staging (no API_KEY defined)"
-          echo "API_KEY value: ${{ secrets.API_KEY }}"
-          echo "Expected: repository-api-key-67890"
+          echo "API_KEY length: ${#API_KEY}"
+          echo "API_KEY first 3 chars: ${API_KEY:0:3}"
+          echo "Expected: repository secret (length ~25, starts 'rep')"
           echo "---"
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
 
   # Simulación si NO existiera Repository Secret
   simulate-organization-only:
